@@ -20,6 +20,11 @@ if [ "$CHECKSEL" == "SELINUX=enforcing" ]; then
         setenforce 0
 fi
 
+# 修复sysctl
+cp /sbin/sysctl /sbin/sysctl.bak
+rm -f /sbin/sysctl
+ln -s /bin/true /sbin/sysctl
+
 # 由于该脚本依赖于wget,所以需要首先安装wget
 if ! [ -x "$(command -v wget)" ]; then
     echo -e "\n由于该脚本依赖wget,所以需要安装它.正在安装wget,请耐心等待......"
