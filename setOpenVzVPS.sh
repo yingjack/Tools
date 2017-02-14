@@ -20,11 +20,6 @@ if [ "$CHECKSEL" == "SELINUX=enforcing" ]; then
         setenforce 0
 fi
 
-# 修复sysctl
-cp /sbin/sysctl /sbin/sysctl.bak
-rm -f /sbin/sysctl
-ln -s /bin/true /sbin/sysctl
-
 # 由于该脚本依赖于wget,所以需要首先安装wget
 if ! [ -x "$(command -v wget)" ]; then
     echo -e "\n由于该脚本依赖wget,所以需要安装它.正在安装wget,请耐心等待......"
@@ -444,6 +439,7 @@ EOF
     sed -i 's/^[][ ]*//g' $SS_PROFILE
 
     # 启用服务
+    systemctl enable shadowsocks-libev >/dev/null 2>&1
     systemctl start shadowsocks-libev
 
     # Add alias
@@ -512,6 +508,7 @@ EOF
     # Delete the spaces
     sed -i 's/^[][ ]*//g' $SQ_CONF
     
+    systemctl enable squid >/dev/null 2>&1
     systemctl start squid
     
     # Add alias
@@ -799,6 +796,7 @@ EOF
     # Delete the 4 spaces at the beginning of the line in "/etc/my.cnf.d/server.cnf"
     sed -i 's/^....//' $MARIADB_SERVER_CNF
     
+    systemctl enable mariadb >/dev/null 2>&1
     systemctl start mariadb
 
     # set password
