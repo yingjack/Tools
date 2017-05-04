@@ -411,23 +411,24 @@ installSS() {
     delayedStart
 
     echo -e "\n配置信息收集完成,开始通过yum安装相关依赖..."
-    cat << 'EOF' > /etc/yum.repos.d/dnf-stack-el7.repo
-    [dnf-stack-el7]
-    name=Copr repo fordnf-stack-el7 owned by @rpm-software-management
-    baseurl=https://copr-be.cloud.fedoraproject.org/results/@rpm-software-management/dnf-stack-el7/epel-7-\$basearch/
+    cat << 'EOF' > /etc/yum.repos.d/librehat-shadowsocks-epel-7.repo
+    [librehat-shadowsocks]
+    name=Copr repo for shadowsocks owned by librehat
+    baseurl=https://copr-be.cloud.fedoraproject.org/results/librehat/shadowsocks/epel-7-$basearch/
+    type=rpm-md
     skip_if_unavailable=True
     gpgcheck=1
-    gpgkey=https://copr-be.cloud.fedoraproject.org/results/@rpm-software-management/dnf-stack-el7/pubkey.gpg
+    gpgkey=https://copr-be.cloud.fedoraproject.org/results/librehat/shadowsocks/pubkey.gpg
+    repo_gpgcheck=0
     enabled=1
     enabled_metadata=1
 EOF
     # Delete the 4 spaces
-    sed -i 's/^....//' /etc/yum.repos.d/dnf-stack-el7.repo
+    sed -i 's/^....//' /etc/yum.repos.d/librehat-shadowsocks-epel-7.repo
     yum install dnf dnf-conf dnf-automatic -y >/dev/null 2>&1 || error_exit "yum安装dnf失败,退出!!"
     dnf install dnf-plugins-core -y >/dev/null 2>&1 || error_exit "dnf安装plugin失败,退出!!"
 
     echo -e "\n开始通过dnf安装Shadowsocks libev..."
-    dnf copr enable librehat/shadowsocks -y
     dnf update -y >/dev/null 2>&1 || error_exit "dnf升级失败,退出!!"
     dnf install shadowsocks-libev -y >/dev/null 2>&1 || error_exit "dnf安装Shadowsocks失败,退出!!"
 
